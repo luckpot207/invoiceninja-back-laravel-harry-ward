@@ -1,0 +1,119 @@
+<?php
+/**
+ * Invoice Ninja (https://invoiceninja.com).
+ *
+ * @link https://github.com/invoiceninja/invoiceninja source repository
+ *
+ * @copyright Copyright (c) 2023. Invoice Ninja LLC (https://invoiceninja.com)
+ *
+ * @license https://www.elastic.co/licensing/elastic-license
+ */
+
+namespace App\Models;
+
+use App\Utils\Traits\MakesDates;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * App\Models\ClientGatewayToken
+ *
+ * @property int $id
+ * @property int $company_id
+ * @property int|null $client_id
+ * @property string|null $token
+ * @property string|null $routing_number
+ * @property int $company_gateway_id
+ * @property string|null $gateway_customer_reference
+ * @property int $gateway_type_id
+ * @property int $is_default
+ * @property object|null $meta
+ * @property int|null $deleted_at
+ * @property int|null $created_at
+ * @property int|null $updated_at
+ * @property int $is_deleted
+ * @property-read \App\Models\Client|null $client
+ * @property-read \App\Models\Company $company
+ * @property-read \App\Models\CompanyGateway|null $gateway
+ * @property-read \App\Models\GatewayType|null $gateway_type
+ * @property-read mixed $hashed_id
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel company()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel exclude($columns)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BaseModel scope()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereCompanyGatewayId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereGatewayCustomerReference($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereGatewayTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereIsDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereMeta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereRoutingNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientGatewayToken withoutTrashed()
+ * @mixin \Eloquent
+ */
+class ClientGatewayToken extends BaseModel
+{
+    use MakesDates;
+    use SoftDeletes;
+
+    protected $casts = [
+        'meta' => 'object',
+        'updated_at' => 'timestamp',
+        'created_at' => 'timestamp',
+        'deleted_at' => 'timestamp',
+    ];
+
+    protected $appends = [
+        'hashed_id',
+    ];
+
+    protected $fillable = [
+        'token',
+        'routing_number',
+        'gateway_customer_reference',
+        'gateway_type_id',
+        'meta',
+        'client_id',
+    ];
+
+    public function getEntityType()
+    {
+        return self::class;
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class)->withTrashed();
+    }
+
+    public function gateway()
+    {
+        return $this->hasOne(CompanyGateway::class, 'id', 'company_gateway_id');
+    }
+
+    public function gateway_type()
+    {
+        return $this->hasOne(GatewayType::class, 'id', 'gateway_type_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class)->withTrashed();
+    }
+}

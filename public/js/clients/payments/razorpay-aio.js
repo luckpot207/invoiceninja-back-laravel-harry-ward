@@ -1,0 +1,2 @@
+/*! For license information please see razorpay-aio.js.LICENSE.txt */
+(()=>{var e,n=JSON.parse(null===(e=document.querySelector("meta[name=razorpay-options]"))||void 0===e?void 0:e.content);n.handler=function(e){document.getElementById("razorpay_payment_id").value=e.razorpay_payment_id,document.getElementById("razorpay_signature").value=e.razorpay_signature,document.getElementById("server-response").submit()},n.modal={ondismiss:function(){o.disabled=!1}};var a=new Razorpay(n),o=document.getElementById("pay-now");o.onclick=function(e){o.disabled=!0,a.open()}})();
